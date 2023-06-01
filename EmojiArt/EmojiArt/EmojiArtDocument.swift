@@ -9,7 +9,13 @@ import SwiftUI
 
 class EmojiArtDocument: ObservableObject {
     
-    @Published private(set) var emojiArtie: EmojiArtie
+    @Published private(set) var emojiArtie: EmojiArtie {
+        didSet {
+            if emojiArtie.background != oldValue.background {
+                fetchBackgroundImageDataIfNecessary()
+            }
+        }
+    }
     
     init() {
         emojiArtie = EmojiArtie()
@@ -19,6 +25,37 @@ class EmojiArtDocument: ObservableObject {
     
     var emojis: [EmojiArtie.Emoji] { emojiArtie.emojis }
     var background: EmojiArtie.Background { emojiArtie.background }
+    
+    @Published var backgroundImage: UIImage?
+    @Published var backgroundImageFetchStatus = BackgroundImageFetchStatus.idle
+    
+    enum BackgroundImageFetchStatus {
+        case idle
+        case fetching
+    }
+    
+    private func fetchBackgroundImageDataIfNecessary() {
+        backgroundImage = nil
+        switch emojiArtie.background {
+        case .url(let url):
+            backgroundImageFetchStatus = .fetching
+            DispatchQueue.global(qos: .userInitiated).async {
+                //voltar para a main thread para atualizar ui
+                DispatchQueue.main.async { [weak self] in //weak para não manter a model na memoria
+                    //checar se é a imagem mais recente arrastada
+                    if self?.emojiArtie.background == EmojiArtie.Background.url(url) {
+                        self?.backgroundImageFetchStatus = .idle
+                        if let imageData = try? Data(contentsOf: url) {
+                            self?.backgroundImage = UIImage(data: imageData)
+                        }
+                    }
+                }
+            }
+        case .imageData(let data):
+            backgroundImage = UIImage(data: data)
+        case .blank: break
+        }
+    }
     
     // MARK: - Intent(s)
     
