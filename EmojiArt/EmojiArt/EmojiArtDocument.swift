@@ -47,7 +47,12 @@ class EmojiArtDocument: ObservableObject {
     }
     
     init() {
-        emojiArtie = EmojiArtie()
+        if let url = Autosave.url, let autosavedEmojiArtie = try? EmojiArtie(url: url) {
+            emojiArtie = autosavedEmojiArtie
+            fetchBackgroundImageDataIfNecessary()
+        } else {
+            emojiArtie = EmojiArtie()
+        }
     }
     
     var emojis: [EmojiArtie.Emoji] { emojiArtie.emojis }

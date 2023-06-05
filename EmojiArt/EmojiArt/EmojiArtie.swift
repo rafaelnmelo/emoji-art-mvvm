@@ -35,6 +35,15 @@ struct EmojiArtie: Codable {
         try JSONEncoder().encode(self)
     }
     
+    init(json: Data) throws {
+        self = try JSONDecoder().decode(EmojiArtie.self, from: json)
+    }
+    
+    init(url: URL) throws {
+        let data = try Data(contentsOf: url)
+        self = try EmojiArtie(json: data)
+    }
+    
     //impossibilita a criação personalizada
     init() {}
     
