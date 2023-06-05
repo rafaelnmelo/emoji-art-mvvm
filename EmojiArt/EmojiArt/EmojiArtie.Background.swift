@@ -8,10 +8,30 @@
 import Foundation
 
 extension EmojiArtie {
-    enum Background: Equatable {
+    enum Background: Equatable, Codable {
         case blank
         case url(URL)
         case imageData(Data)
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            if let url = try? container.decode(URL.self, forKey: .url) {
+                self = .url(url)
+            } else if let imageData = try? container.decode(Data.self, forKey: .imageData) {
+                self = .imageData(imageData)
+            } else {
+                self = .blank
+            }
+        }
+        //necessário tornar codable quando os tipos não são por default
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            switch self {
+            case .blank: break
+            case .url(let url): try container.encode(url, forKey: .url)
+            case .imageData(let data): try container.encode(data, forKey: .imageData)
+            }
+        }
         
         var url: URL? {
             switch self {
@@ -25,6 +45,11 @@ extension EmojiArtie {
             case .imageData(let data): return data
             default: return nil
             }
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case url
+            case imageData
         }
     }
 }

@@ -11,16 +11,43 @@ class EmojiArtDocument: ObservableObject {
     
     @Published private(set) var emojiArtie: EmojiArtie {
         didSet {
+            autosave()
             if emojiArtie.background != oldValue.background {
                 fetchBackgroundImageDataIfNecessary()
             }
         }
     }
     
+    private struct Autosave {
+        static let filename = "Autosave.emojiartie"
+        static var url: URL? {
+            let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+            return documentDirectory?.appendingPathComponent(filename)
+        }
+    }
+    
+    private func autosave() {
+        if let url = Autosave.url {
+            save(to: url)
+        }
+    }
+    
+    private func save(to url: URL) {
+        let thisFunction = "\(String(describing: self)).\(#function)"
+        do {
+            let data: Data = try emojiArtie.json()
+            print("\(thisFunction) json = \(String(data: data, encoding: .utf8) ?? "nil")")
+            try data.write(to: url)
+            print("\(thisFunction) success!")
+        } catch let encodingError where encodingError is EncodingError {
+            print("\(thisFunction) couldn't encode because = \(encodingError.localizedDescription)")
+        } catch {
+            print("\(thisFunction) error \(error)")
+        }
+    }
+    
     init() {
         emojiArtie = EmojiArtie()
-        emojiArtie.addEmoji("🍌", at: (x: -100, y: -100), size: 80)
-        emojiArtie.addEmoji("🍆", at: (x: 50, y: 100), size: 40)
     }
     
     var emojis: [EmojiArtie.Emoji] { emojiArtie.emojis }
