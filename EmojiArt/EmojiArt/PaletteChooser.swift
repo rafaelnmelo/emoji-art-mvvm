@@ -38,8 +38,12 @@ struct PaletteChooser: View {
     
     @ViewBuilder
     var contextMenu: some View {
+        AnimatedActionButton(title: "Edit", systemImage: "pencil") {
+            editing = true
+        }
         AnimatedActionButton(title: "New", systemImage: "plus") {
             store.insertPalette(named: "New", emojis: "", at: chosenPaletteIndex)
+            editing = true
         }
         AnimatedActionButton(title: "Delete", systemImage: "minus.circle") {
             chosenPaletteIndex =  store.removePalette(at: chosenPaletteIndex)
@@ -61,6 +65,8 @@ struct PaletteChooser: View {
         }
     }
     
+    @State private var editing = false
+    
     func body(for palette: Palette) -> some View {
         HStack {
             Text(palette.name)
@@ -69,6 +75,9 @@ struct PaletteChooser: View {
         }
         .id(palette.id) //usado para hstack atualizar e usar a transição
         .transition(rollTransition)
+        .popover(isPresented: $editing) {
+            PaletteEditor(palette: $store.palettes[chosenPaletteIndex])
+        }
     }
     
     var rollTransition: AnyTransition {
