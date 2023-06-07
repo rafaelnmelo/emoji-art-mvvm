@@ -44,8 +44,27 @@ struct EmojiArtDocumentView: View {
                 drop(providers: providers, at: location, in: geometry)
             }
             .gesture(panGesture().simultaneously(with: zoomGesture()))
+            .alert(item: $alertToShow) { alertToShow in
+                alertToShow.alert()
+            }
+            .onChange(of: document.backgroundImageFetchStatus) { status in
+                switch status {
+                case .failed(let url):
+                    showBackgroundimageFetchFailedAlert(url)
+                default: break
+                }
+            }
         }
-
+    }
+    
+    @State private var alertToShow: IdentifiableAlert?
+    
+    private func showBackgroundimageFetchFailedAlert(_ url: URL) {
+        alertToShow = IdentifiableAlert(id: "fetch failed" + url.absoluteString) {
+            Alert(title: Text("Background Image Fetch"),
+                  message: Text("Coundn't load image from \(url)."),
+                  dismissButton: .default(Text("OK")))
+        }
     }
     
     private func drop(providers: [NSItemProvider], at location: CGPoint, in geometry: GeometryProxy) -> Bool{
