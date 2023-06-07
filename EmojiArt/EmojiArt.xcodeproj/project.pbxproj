@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8D2CDD272A2E573800AED176 /* PaletteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D2CDD262A2E573800AED176 /* PaletteStore.swift */; };
+		8D66E0AE2A31014700A114B9 /* PaletteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D66E0AD2A31014700A114B9 /* PaletteManager.swift */; };
 		8D8001412A2FC1A500EB2D20 /* PaletteChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8001402A2FC1A500EB2D20 /* PaletteChooser.swift */; };
 		8D8001432A2FCB4900EB2D20 /* PaletteEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8001422A2FCB4900EB2D20 /* PaletteEditor.swift */; };
 		8DB4511A2A25280E00EA4634 /* EmojiArtApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB451192A25280E00EA4634 /* EmojiArtApp.swift */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		8D2CDD262A2E573800AED176 /* PaletteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteStore.swift; sourceTree = "<group>"; };
+		8D66E0AD2A31014700A114B9 /* PaletteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteManager.swift; sourceTree = "<group>"; };
 		8D8001402A2FC1A500EB2D20 /* PaletteChooser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteChooser.swift; sourceTree = "<group>"; };
 		8D8001422A2FCB4900EB2D20 /* PaletteEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteEditor.swift; sourceTree = "<group>"; };
 		8DB451162A25280E00EA4634 /* EmojiArt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmojiArt.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +77,7 @@
 				8DB451292A252D8B00EA4634 /* EmojiArtie.Background.swift */,
 				8D8001402A2FC1A500EB2D20 /* PaletteChooser.swift */,
 				8D8001422A2FCB4900EB2D20 /* PaletteEditor.swift */,
+				8D66E0AD2A31014700A114B9 /* PaletteManager.swift */,
 				8D2CDD262A2E573800AED176 /* PaletteStore.swift */,
 				8DB4511F2A25280F00EA4634 /* Preview Content */,
 				8DB4512D2A2531C900EA4634 /* UtilityExtensions.swift */,
@@ -162,6 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DB6FCE72A2915A300443F12 /* UtilityViews.swift in Sources */,
+				8D66E0AE2A31014700A114B9 /* PaletteManager.swift in Sources */,
 				8D2CDD272A2E573800AED176 /* PaletteStore.swift in Sources */,
 				8D8001432A2FCB4900EB2D20 /* PaletteEditor.swift in Sources */,
 				8DB4511C2A25280E00EA4634 /* EmojiArtDocumentView.swift in Sources */,

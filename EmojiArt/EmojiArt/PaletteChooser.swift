@@ -48,6 +48,9 @@ struct PaletteChooser: View {
         AnimatedActionButton(title: "Delete", systemImage: "minus.circle") {
             chosenPaletteIndex =  store.removePalette(at: chosenPaletteIndex)
         }
+        AnimatedActionButton(title: "Manager", systemImage: "slider.vertical.3") {
+            managing = true
+        }
         goToMenu
     }
     
@@ -66,6 +69,7 @@ struct PaletteChooser: View {
     }
     
     @State private var editing = false
+    @State private var managing = false
     
     func body(for palette: Palette) -> some View {
         HStack {
@@ -77,6 +81,9 @@ struct PaletteChooser: View {
         .transition(rollTransition)
         .popover(isPresented: $editing) {
             PaletteEditor(palette: $store.palettes[chosenPaletteIndex])
+        }
+        .sheet(isPresented: $managing) {
+            PaletteManager()
         }
     }
     
