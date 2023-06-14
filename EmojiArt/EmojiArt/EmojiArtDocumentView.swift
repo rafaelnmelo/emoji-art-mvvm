@@ -63,6 +63,16 @@ struct EmojiArtDocumentView: View {
                 AnimatedActionButton(title: "Paste Background", systemImage: "doc.on.clipboard") {
                     pasteBackground()
                 }
+                if Camera.isAvailable {
+                    AnimatedActionButton(title: "Take photo", systemImage: "camera") {
+                        backgroundPicker = .camera
+                    }
+                }
+                if PhotoLibrary.isAvailable {
+                    AnimatedActionButton(title: "Search photos", systemImage: "photo") {
+                        backgroundPicker = .library
+                    }
+                }
                 if let undoManager = undoManager {
                     if undoManager.canUndo {
                         AnimatedActionButton(title: undoManager.undoActionName, systemImage: "arrow.uturn.backward") {
@@ -76,10 +86,34 @@ struct EmojiArtDocumentView: View {
                     }
                 }
             }
+            .sheet(item: $backgroundPicker) { pickerType in
+                switch pickerType {
+                case .camera: Camera { image in handlePickedBackgroundImage(image) }
+                case .library: PhotoLibrary { image in handlePickedBackgroundImage(image) }
+                }
+            }
         }
     }
     
+    private func handlePickedBackgroundImage(_ image: UIImage?) {
+        autozoom = true
+        if let imageData = image?.jpegData(compressionQuality: 1.0) {
+            document.setBackground(.imageData(imageData), undoManager: undoManager)
+        }
+        backgroundPicker = nil
+    }
+    
+    @State private var backgroundPicker: BackgroundPickerType?
+    
+    enum BackgroundPickerType: Identifiable {
+        var id: BackgroundPickerType { self }
+        
+        case camera
+        case library
+    }
+    
     private func pasteBackground() {
+        autozoom = true
         if let imageData = UIPasteboard.general.image?.jpegData(compressionQuality: 1.0) {
             document.setBackground(.imageData(imageData), undoManager: undoManager)
         } else if let url = UIPasteboard.general.url?.imageURL {
