@@ -119,4 +119,32 @@ extension UndoManager {
     }
 }
 
+extension View {
+    @ViewBuilder
+    func wrappedInNavigationViewToMakeDismissable(_ dismiss: (() -> Void)? ) -> some View {
+        if UIDevice.current.userInterfaceIdiom != .pad, let dismiss = dismiss {
+            NavigationView {
+                self
+                    .navigationBarTitleDisplayMode(.inline)
+                    .dismissable(dismiss)
+            }
+            .navigationViewStyle(StackNavigationViewStyle()) ///no side views in navigation
+        } else {
+            self
+        }
+    }
+    
+    @ViewBuilder
+    func dismissable(_ dismiss: (() -> Void)? ) -> some View {
+        if UIDevice.current.userInterfaceIdiom != .pad, let dismiss = dismiss {
+            self.toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { dismiss() }
+                }
+            }
+        } else {
+            self
+        }
+    }
+}
 
