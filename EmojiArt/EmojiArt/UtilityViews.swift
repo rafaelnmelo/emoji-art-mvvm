@@ -81,6 +81,32 @@ struct IdentifiableAlert: Identifiable {
 }
 
 extension View {
+    @ViewBuilder
+    func dismissable(_ dismiss: (() -> Void)? ) -> some View {
+        if UIDevice.current.userInterfaceIdiom != .pad, let dismiss = dismiss {
+            self.toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { dismiss() }
+                }
+            }
+        } else {
+            self
+        }
+    }
+    
+    @ViewBuilder
+    func wrappedInNavigationViewToMakeDismissable(_ dismiss: (() -> Void)? ) -> some View {
+        if UIDevice.current.userInterfaceIdiom != .pad, let dismiss = dismiss {
+            NavigationView {
+                self
+                    .navigationBarTitleDisplayMode(.inline)
+                    .dismissable(dismiss)
+            }
+            .navigationViewStyle(StackNavigationViewStyle()) ///no side views in navigation
+        } else {
+            self
+        }
+    }
     // L15 modifier which replaces uses of .toolbar
     // L15 in horizontally compact environments, it puts a single button in the toolbar
     // L15 with a context menu containing the items
