@@ -24,12 +24,10 @@ struct EmojiArtDocumentView: View {
     var documentBody: some View {
         GeometryReader { geometry in
             ZStack {
-                Color.white.overlay(
-                    OptionalImage(uiImage: document.backgroundImage)
-                        .scaleEffect(zoomScale)
-                        .position(convertFromEmojiCoordinates((0,0), in: geometry))
-                )
-                .gesture(doubleTapToZoom(in: geometry.size))
+                OptionalImage(uiImage: document.backgroundImage)
+                    .scaleEffect(zoomScale)
+                    .position(convertFromEmojiCoordinates((0,0), in: geometry))
+                    .gesture(doubleTapToZoom(in: geometry.size))
                 if document.backgroundImageFetchStatus == .fetching {
                     ProgressView().scaleEffect(2)
                 } else {
@@ -61,12 +59,36 @@ struct EmojiArtDocumentView: View {
                     zoomToFit(image, in: geometry.size)
                 }
             }
-            .toolbar {
-                UndoButton(
-                    undo: undoManager?.optionalUndoMenuItemTitle,
-                    redo: undoManager?.optionalRedoMenuItemTitle
-                )
+            .compactableToolbar {
+                AnimatedActionButton(title: "Paste Background", systemImage: "doc.on.clipboard") {
+                    pasteBackground()
+                }
+                if let undoManager = undoManager {
+                    if undoManager.canUndo {
+                        AnimatedActionButton(title: undoManager.undoActionName, systemImage: "arrow.uturn.backward") {
+                            undoManager.undo()
+                        }
+                    }
+                    if undoManager.canRedo {
+                        AnimatedActionButton(title: undoManager.undoActionName, systemImage: "arrow.uturn.forward") {
+                            undoManager.redo()
+                        }
+                    }
+                }
             }
+        }
+    }
+    
+    private func pasteBackground() {
+        if let imageData = UIPasteboard.general.image?.jpegData(compressionQuality: 1.0) {
+            document.setBackground(.imageData(imageData), undoManager: undoManager)
+        } else if let url = UIPasteboard.general.url?.imageURL {
+            document.setBackground(.url(url), undoManager: undoManager)
+        } else {
+            alertToShow = IdentifiableAlert(
+                title: "Paste Background",
+                message: "No image currently on the pasteboard."
+            )
         }
     }
     
